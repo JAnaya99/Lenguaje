@@ -1,0 +1,93 @@
+#PROGRAMA DE PRUEBA
+
+#Definicion de variables.
+var {
+    #Definicion de variables enteras.
+    x1, x2, y1 int;
+    x2 int;
+
+    #Definicion de variables flotantes.
+    x3 double;
+    x4, x5, x6 double;
+
+    #Definicion de arreglos 1 dimension.
+    a1, b1 int[expar];
+
+    #Definicion de arreglos 2 dimensiones.
+    a2, b2 int[expar][expar];
+
+    #Definicion de arreglos 3 dimensiones.
+    a3, b3 double[expar][expar][expar];
+}
+
+# Declaracion de funciones antes del main.
+func rutina_antes_main{
+    #Asignacion en una funcion a una variable.
+    x1 = expar;
+
+    #Asignacion en una funcion a una matriz.
+    a3[expar][expar][expar] = expar;
+
+    #Ciclo for
+    for explog {
+        x = expar;
+        call rutina_despues_main;
+    }
+}
+
+#Estructura del main
+func main{
+    #Leer de consola
+    scan(id1, id2, id3);
+    scan(id);
+
+    #Imprimir a consola
+    puts("Hola mundo, el valor de la variable x es: ", x);
+    puts(a3[expar][expar][expar]);
+    puts("El valor del arreglo en la posicion 0 es: ", a1[expar]);
+
+    #Asignacion
+    x1 = expar;
+
+    #Llamar a una funcion
+    call rutina_antes_main;
+
+    #Funciomaniento de Estructura if.
+    if explog {
+        if explog {
+            #Ciclo while
+            while explog {
+                call rutina_antes_main;
+                call rutina_antes_main;
+                x = expar;
+            }
+
+            #Ciclo DOWHILE
+            do {
+                for explog {
+                    x = expar;
+                }
+            } while explog;
+        }
+    } elif explog {
+        if explog {
+
+        } else {
+
+        }
+    } elif explog {
+        if explog {
+
+        } elif explog {
+
+        }
+    } else {
+        call rutina_despues_main;
+    }
+}
+
+# Declaracion de funciones despues del main.
+func rutina_despues_main{
+    a2[expar][expar] = expar;
+}
+
