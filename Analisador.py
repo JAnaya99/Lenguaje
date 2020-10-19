@@ -3,6 +3,12 @@ import ply.lex as lex
 import ply.yacc as yacc
 import sys
 
+#Tabla de Simbolos.
+sim_tab = {}
+
+#Arreglo de erroes.
+errores = []
+
 #Palabras reservadas
 reserved = {
 	'var'		: 'VAR',
@@ -68,6 +74,16 @@ def t_error(t):
 	print("Illegal character '%s'" % t.value[0])
 	t.lexer.skip(1)
 
+#Funciones auxiliares.
+#Funcion que permite transformar una lista de ID y guardarlas en la tabla de simbolos.
+def ToSimbolTable(ids, tipo):
+	lista_ids = ids.split(',')
+	for x in lista_ids:
+		if x in sim_tab:
+			return False
+		sim_tab[x] = tipo
+	return True
+
 lexer = lex.lex()
 
 #Estructura General.
@@ -86,20 +102,26 @@ def p_DEFVAR(p):
 def p_VARIABLE(p):
 	'''
 	VARIABLE : VARIABLE X ID TIPO ENDINS
+			 | VARIABLE X ID TIPO ARRAY ENDINS
 			 |
 	'''
-	print('...................................')
-	if(len(p) > 2):
-		print("Entre1")
-		print("nombre ?", p[0])
-		print("Otras variables", p[2])
-		print(p[3], " -> ", p[4])
+	if len(p) > 2:
+		#Adjuntar , + id.
+		if len(p[2]) > 0:
+			p[2] = str(p[2]) + ',' + p[3]
+		else: #Adjuntar solo id.
+			p[2] =  p[3]
+		#Ver si es un arreglo o una variable normal.
+		if len(p) == 6:
+			if not ToSimbolTable(str(p[2]), str(p[4])):
+				errores.append("Error variable repetida en linea: " + str(p.lexer.lineno - 1))
 
 def p_X(p):
 	'''
 	X : X ID COMA
 	  |
 	'''
+	#Recursivamente buscar todos los id en una misma linea.
 	if len(p) == 1:
 		p[0] = ""
 	if len(p) > 2:
@@ -113,8 +135,6 @@ def p_TIPO(p):
 	'''
 	TIPO : INT 
 	     | DOUBLE
-	     | INT ARRAY
-	     | DOUBLE ARRAY
 	'''
 	p[0] = p[1]
 
@@ -238,6 +258,17 @@ if __name__ == '__main__':
 		archivo = open(nombre, 'r')
 		codigo = archivo.read()
 		if(parser.parse(codigo, tracking=True) == 'CORRECTO'):
-			print("Syntaxis Correcta")
+			if(len(errores) > 0):
+				print("Syntaxis Incorrecta")
+				#Lista de errores
+				for x in errores:
+					print(x)
+				sys.exit()
+			else:
+				print("Syntaxis Correcta")
+		#Imprimir variables
+		print("Variables declaradas:")
+		for x,y in sim_tab.items():
+			print(x, " -> ", y)
 	except EOFError:
 		print(EOFError)

@@ -4,7 +4,7 @@
 var {
     #Definicion de variables enteras.
     x1, x2, y1 int;
-    x2 int;
+    x9 int;
 
     #Definicion de variables flotantes.
     x3 double;
