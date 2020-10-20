@@ -3,9 +3,24 @@ var {
     a1, a2, a3 int;
     a5 int;
 
-    a1 double;
+    a6 double;
+
+    mat int[10][10];
 }
 
 func main {
+    a1 = 1 + 1 * 10;
+    puts("El valor de la variable a1 es: ", a1);
+
+    if a1 < 12 {
+        puts("El valor de a1 es menor a 12");
+    } else {
+        a1 = a1 * a1 * a1 / a2;
+    } 
+
+    for (a2 < 10 and a3 > 5.5) or (a2 < a3) or mat[1][1] < 10 {
+        a2 = (a2 + 1) * 10;
+        a3 = (a3 - 1) / 10;
+    }
 
 }

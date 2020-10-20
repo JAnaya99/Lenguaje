@@ -14,9 +14,9 @@ reserved = {
 	'var'		: 'VAR',
 	'func'		: 'FUNC',
 	'int'		: 'INT',
+	'or'		: 'ORT',
+	'and'       : 'ANDT',
 	'double'	: 'DOUBLE',
-	'expar'		: 'EXPAR',
-	'explog'	: 'EXPLOG',
 	'main'		: 'MAINT',
 	'call'		: 'CALL',
 	'if'		: 'IFT',
@@ -41,7 +41,12 @@ tokens = [
 	'COMA',
 	'ENDINS',
 	'IGUAL',
-	'STRING'
+	'STRING',
+	'NUMERO',
+	'DNUMERO',
+	'SUMRES',
+	'MULTDIV',
+	'OPREL',
 ] + list(reserved.values())
 
 #Expresiones regulares para tokenizar las entradas.
@@ -55,6 +60,17 @@ t_COMA		= r'\,'
 t_ENDINS	= r'\;'
 t_IGUAL		= r'\='
 t_STRING	= r'\".*\"'
+t_SUMRES 	= r'\+|\-'
+t_MULTDIV	= r'\*|\/|\%|\^'
+t_OPREL		= r'\<|\>|\=\=|\<\=|\>\='
+
+def t_DNUMERO(t):
+	r'\-?\d+\.\d+'
+	return t
+
+def t_NUMERO(t):
+	r'\-?\d+'
+	return t
 
 def t_ID(t):
 	r'[a-zA-Z_][a-zA-Z_0-9]*'
@@ -226,19 +242,59 @@ def p_Y(p):
 # Imprimir a consola.
 def p_PUTS(p):
 	'''
-	PUTS : PUTST LPAR Z LINE RPAR ENDINS
+	PUTS : PUTST LPAR Z EXPAR RPAR ENDINS
+	     | PUTST LPAR Z STRING RPAR ENDINS
 	'''
 def p_Z(p):
 	'''
-	Z : Z LINE COMA
+	Z : Z STRING COMA
+	  | Z EXPAR COMA 
 	  |
 	'''
-def p_LINE(p):
+# Expresion aritmetica.
+def p_EXPAR(p):
 	'''
-	LINE : ID
-	     | ID ARRAY
-	     | EXPAR
-		 | STRING
+	EXPAR : EXPAR SUMRES T
+          | T
+	'''
+
+def p_T(P):
+	'''
+	T : T MULTDIV F
+	T : F
+	'''
+
+def p_F(p):
+	'''
+	F : CTE
+      | LPAR EXPAR RPAR 
+	'''
+
+
+def p_CTE(p):
+	'''
+	CTE : ID
+	    | ID ARRAY
+	    | DNUMERO
+		| NUMERO
+	'''
+
+def p_EXPLOG(p):
+	'''
+	EXPLOG : EXPLOG ORT TL
+	       | TL
+	'''
+
+def p_TL(p):
+	'''
+	TL : TL ANDT FL
+	   | FL 
+	'''
+
+def p_FL(p):
+	'''
+	FL : LPAR EXPLOG RPAR
+	   | CTE OPREL CTE
 	'''
 
 def p_error(p):
